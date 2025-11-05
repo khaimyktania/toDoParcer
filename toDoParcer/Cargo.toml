@@ -1,0 +1,16 @@
+[package]
+name = "toDoParcer"
+path = "src/lib.rs"
+version = "0.1.0"
+edition = "2024"
+authors = ["Tanya Khaimyk <t.khaimyk@ukma.edu.ua>"]
+description = """
+Rust parser for a custom task management with projects, dependencies, priorities, assignees,
+ and tags. Used to describe the flow of tasks in text format.
+"""
+
+
+[dependencies]
+anyhow = "1.0.100"
+pest = "2.8.3"
+pest_derive = "2.8.3"

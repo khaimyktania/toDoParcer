@@ -1,0 +1,21 @@
+// Defines a block (project) of tasks
+project = { 
+    (WHITESPACE | NEWLINE)* ~ "project" ~ WHITESPACE+ ~ quoted ~ (WHITESPACE | NEWLINE)* ~ "{" 
+    ~ (task ~ (WHITESPACE | NEWLINE)*)* 
+    ~ "}" ~ (WHITESPACE | NEWLINE)*
+}
+
+// Kind of task
+task = _{ todo | done }
+
+todo = { "todo:" ~ WHITESPACE* ~ quoted }
+done = { "done:" ~ WHITESPACE* ~ quoted }
+
+// Quoted string: "Something"
+quoted = @{ "\"" ~ (!"\"" ~ ANY)* ~ "\"" }
+
+// Whitespace (space or tab)
+WHITESPACE = _{ " " | "\t" }
+
+// Line breaks
+NEWLINE = _{ "\r"? ~ "\n" }
