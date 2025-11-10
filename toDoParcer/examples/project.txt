@@ -1,0 +1,17 @@
+project "Parser" {
+  todo: "Design grammar", @high, due:2025-11-15, assign:@tanya, @tag:"core",
+  todo: "Write parser in Rust", depends_on:"Design grammar", assign:@oleksii, @medium,
+  done: "Initialize Cargo project", @low, @tag:"setup",
+}
+
+project "Frontend" {
+  todo: "Create CLI", @medium, assign:@maria, due:2025-11-20,
+  todo: "Implement task list", depends_on:"Create UI mockups", assign:@andrii, @high,
+  done: "Set up all dependencies", @low, @tag:"frontend",
+}
+
+project "All" {
+  todo: "Make commit", @high, assign:@ivan, @tag:"db",
+  todo: "Cargo clippy", depends_on:"Design database schema", assign:@sofia, @medium, due:2025-12-01,
+  done: "Breathe", @low,
+}
