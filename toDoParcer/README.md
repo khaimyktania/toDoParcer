@@ -54,3 +54,57 @@ Total: 3 tasks (2 active, 1 completed)
 
 If there are syntax errors in the text (for example, a missing parenthesis or an incorrect date), the parser will report this to the console.
 Output to the console in a clear tabular form (as in the example above).
+
+
+## Grammar 
+
+```
+/// The root rule — represents the entire file.
+/// 
+/// Each file must contain one or more `project` blocks.
+file = { SOI ~ project+ ~ EOI }
+
+/// Defines a block (project) of tasks
+project = { 
+    "project" ~ quoted 
+    ~ "{" 
+    ~ task*
+    ~ "}" 
+}
+
+/// Kind of task
+task = { (todo_task | done_task) ~ "," }
+
+/// A task that is still pending.
+todo_task = { "todo:" ~ quoted ~ attribute_list }
+
+/// A task that has been completed.
+done_task = { "done:" ~ quoted ~ attribute_list }
+
+/// Optional list of attributes associated with a task.
+attribute_list = { ("," ~ attribute)* }
+
+/// Possible attributes for a task: priority, due date, assignee, dependencies, tags.
+attribute = { priority | due_date | assignee | depends_on | tag }
+
+/// Priority marker for a task.
+priority = { "@high" | "@medium" | "@low" }
+
+/// Task due date in YYYY-MM-DD format.
+due_date = { "due:" ~ date }
+assignee = { "assign:" ~ "@" ~ identifier }
+depends_on = { "depends_on:" ~ quoted }
+tag = { "@tag:" ~ quoted }
+
+// Quoted string: "Something"
+quoted = @{ "\"" ~ (!"\"" ~ ANY)* ~ "\"" }
+identifier = @{ (ASCII_ALPHANUMERIC | "_" | "-")+ }
+date = @{ ASCII_DIGIT{4} ~ "-" ~ ASCII_DIGIT{2} ~ "-" ~ ASCII_DIGIT{2} }
+
+// Whitespace (space or tab)
+WHITESPACE = _{ " " | "\t" | "\r\n" | "\n" }
+
+// Line breaks
+NEWLINE = _{ "\r"? ~ "\n" }
+COMMENT = _{ "//" ~ (!NEWLINE ~ ANY)* ~ NEWLINE? }
+```
