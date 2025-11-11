@@ -1,10 +1,11 @@
 [package]
 name = "to_do_parcer"
 path = "src/lib.rs"
-version = "0.2.0"
+version = "0.1.2"
 edition = "2024"
 authors = ["Tanya Khaimyk <t.khaimyk@ukma.edu.ua>"]
 license = "MIT"
+documentation = "https://docs.rs/to_do_parcer"
 description = """
 Rust parser for a custom task management with projects, dependencies, priorities, assignees,
  and tags. Used to describe the flow of tasks in text format.
