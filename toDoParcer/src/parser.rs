@@ -30,7 +30,7 @@ pub struct Project {
     pub tasks: Vec<Task>,
 }
 
-// A task node in the AST representing an individual task with its attributes.
+/// A task node in the AST representing an individual task with its attributes.
 #[derive(Debug, Clone)]
 pub struct Task {
     pub status: TaskStatus,
@@ -42,14 +42,14 @@ pub struct Task {
     pub tags: Vec<String>,
 }
 
-// The status of a task, either Todo or Done.
+/// The status of a task, either Todo or Done.
 #[derive(Debug, Clone, PartialEq)]
 pub enum TaskStatus {
     Todo,
     Done,
 }
 
-// The priority level of a task.
+/// The priority level of a task.
 #[derive(Debug, Clone, PartialEq)]
 pub enum Priority {
     High,
