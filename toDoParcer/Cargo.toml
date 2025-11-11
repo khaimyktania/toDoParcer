@@ -1,7 +1,7 @@
 [package]
 name = "to_do_parcer"
 path = "src/lib.rs"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 authors = ["Tanya Khaimyk <t.khaimyk@ukma.edu.ua>"]
 license = "MIT"
