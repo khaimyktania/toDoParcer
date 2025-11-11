@@ -1,8 +1,11 @@
+//! Provides commands to parse `.todo` files or strings, show parse trees, and print credits.
+
 use clap::{Parser, Subcommand};
 use pest::Parser as PestParser;
 use std::fs;
 use to_do_parcer::parser::{ParseError, ToDoParser};
 
+/// Defines CLI root arguments and subcommands.
 #[derive(Parser)]
 #[command(
     name = "to_do_parser",
@@ -14,12 +17,14 @@ struct Cli {
     command: Commands,
 }
 
+/// Supported CLI subcommands.
 #[derive(Subcommand)]
 enum Commands {
     Credits,
     Parse(ParseArgs),
 }
 
+/// Arguments for the `parse` subcommand.
 #[derive(Parser)]
 struct ParseArgs {
     #[arg(short, long)]
@@ -46,6 +51,15 @@ fn main() {
         }
     }
 }
+
+/// Handles the `parse` command.
+///
+/// # Arguments
+/// * `args` — CLI arguments with file path and tree flag.
+///
+/// # Returns
+/// * `Ok(())` if parsed successfully.
+/// * `Err(ParseError)` if parsing fails.
 
 fn run_parse(args: ParseArgs) -> Result<(), ParseError> {
     let content = fs::read_to_string(&args.file)?;

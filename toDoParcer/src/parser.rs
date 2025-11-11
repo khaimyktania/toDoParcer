@@ -1,27 +1,36 @@
-use pest::Parser;
 use pest::iterators::{Pair, Pairs};
+use pest::Parser;
 use thiserror::Error;
 
+/// A parser implementation for the custom file format using Pest.
+///
+/// This struct implements the `pest::Parser` trait .
 #[derive(pest_derive::Parser)]
 // #[doc = include_str!("grammar.pest")]
 #[grammar = "grammar.pest"]
 pub struct ToDoParser;
 
+/// Errors that can occur while reading input or parsing.
 #[derive(Debug, Error)]
 pub enum ParseError {
+    /// Error returned when file cannot be read.
     #[error("File reading error: {0}")]
     Io(#[from] std::io::Error),
 
+    /// Error returned when Pest parser fails.
     #[error("Parsing failed: {0}")]
     Pest(#[from] Box<pest::error::Error<Rule>>),
 }
 
+/// A project node in the AST containing the main things: a
+/// name and a list of tasks.
 #[derive(Debug, Clone)]
 pub struct Project {
     pub name: String,
     pub tasks: Vec<Task>,
 }
 
+// A task node in the AST representing an individual task with its attributes.
 #[derive(Debug, Clone)]
 pub struct Task {
     pub status: TaskStatus,
@@ -33,12 +42,14 @@ pub struct Task {
     pub tags: Vec<String>,
 }
 
+// The status of a task, either Todo or Done.
 #[derive(Debug, Clone, PartialEq)]
 pub enum TaskStatus {
     Todo,
     Done,
 }
 
+// The priority level of a task.
 #[derive(Debug, Clone, PartialEq)]
 pub enum Priority {
     High,
@@ -47,6 +58,12 @@ pub enum Priority {
 }
 
 impl Project {
+    /// Display the project and its tasks in a normal format.
+    ///
+    /// # Example
+    /// ``````
+    /// project.display();
+    /// ```
     pub fn display(&self) {
         println!("Project: {}\n", self.name);
 
@@ -101,7 +118,21 @@ impl Project {
     }
 }
 
+/// Methods for the ToDoParser to parse projects and tasks from input strings or files.
 impl ToDoParser {
+    /// Parse projects from a given input string.
+    ///
+    /// # Arguments
+    /// * `input` - Text representation of the projects and tasks
+    ///
+    /// # Returns
+    /// * `Ok(Vec<Project>)` on success
+    /// * `Err(ParseError)` if parsing fails
+    ///
+    /// # Example
+    /// ```
+    /// let projects = ToDoParser::parse_projects(input)?;
+    /// ```
     pub fn parse_projects(input: &str) -> Result<Vec<Project>, ParseError> {
         let pairs = Self::parse(Rule::file, input).map_err(|e| ParseError::Pest(Box::new(e)))?;
         let mut projects = Vec::new();
@@ -125,12 +156,32 @@ impl ToDoParser {
         Ok(projects)
     }
 
+    /// Parse projects from a file into structured data.
+    ///
+    /// # Arguments
+    /// * `path` - Path to the input file
+    ///
+    /// # Returns
+    /// * `Ok(Vec<Project>)` on success
+    /// * `Err(ParseError)` if reading or parsing fails
+    ///
+    /// # Example
+    /// ```
+    /// let projects = ToDoParser::parse_from_file("tasks.txt")?;
+    /// ```
     pub fn parse_from_file(path: &str) -> Result<Vec<Project>, ParseError> {
         let content = std::fs::read_to_string(path)?;
         Self::parse_projects(&content)
     }
 }
 
+/// Converts a Pest `project` pair into a `Project` struct.
+///
+/// # Arguments
+/// * `pair` - A Pest `Pair` representing a project
+///
+/// # Returns
+/// * `Project` -- struct with parsed data
 fn parse_project_pair(pair: Pair<Rule>) -> Project {
     let mut project_name = String::new();
     let mut tasks = Vec::new();
@@ -149,10 +200,24 @@ fn parse_project_pair(pair: Pair<Rule>) -> Project {
     }
 }
 
+/// Extracts string content without quotes
+///
+/// /// # Arguments
+/// * `pair` - Pest `Pair` representing a quoted string
+///
+/// # Returns
+/// * `String` representing the raw content
 fn parse_quoted(pair: Pair<Rule>) -> String {
     pair.as_str().trim_matches('"').to_string()
 }
 
+/// Converts a Pest `task` pair into a `Task` struct.
+///
+/// # Arguments
+/// * `pair` - A Pest `Pair` representing a task
+///
+/// # Returns
+/// * `Task` -- struct with parsed data
 fn parse_task(pair: Pair<Rule>) -> Task {
     let mut task = Task {
         status: TaskStatus::Todo,
@@ -189,6 +254,12 @@ fn parse_task(pair: Pair<Rule>) -> Task {
     task
 }
 
+/// Parses details and attributes of a single task.`.
+///
+/// # Arguments
+/// * `pair` — Pest pair for the task block.
+/// * `title`, `priority`, `due_date`, `assignee`, `depends_on`, `tags` — Mutable references to fill parsed data.
+
 fn parse_task_details(
     pair: Pair<Rule>,
     title: &mut String,
@@ -211,6 +282,11 @@ fn parse_task_details(
     }
 }
 
+/// Parses a single attribute of a task (priority, due date, etc.).
+///
+/// # Arguments
+/// * `pair` — Pest pair for the attribute.
+/// * `priority`, `due_date`, `assignee`, `depends_on`, `tags` — Mutable references to fill parsed data.
 fn parse_attribute(
     pair: Pair<Rule>,
     priority: &mut Option<Priority>,
@@ -254,6 +330,10 @@ fn parse_attribute(
     }
 }
 
+/// Debug utility: prints a tree of parsed rules (only in debug mode).
+///
+/// # Arguments
+/// * `pairs` - Pest parse tree to display.   
 #[cfg(debug_assertions)]
 pub fn display_tree(pairs: Pairs<Rule>) {
     fn print_pair(pair: Pair<Rule>, indent: usize) {

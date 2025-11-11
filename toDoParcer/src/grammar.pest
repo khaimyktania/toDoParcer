@@ -4,6 +4,7 @@
 file = { SOI ~ project+ ~ EOI }
 
 /// Defines a block (project) of tasks
+/// Each project contains multiple tasks enclosed in `{}`.
 project = { 
     "project" ~ quoted 
     ~ "{" 
@@ -11,7 +12,8 @@ project = {
     ~ "}" 
 }
 
-/// Kind of task
+/// Describes a task entry inside a project.
+/// A task can be either `todo:` or `done:`.
 task = { (todo_task | done_task) ~ "," }
 
 /// A task that is still pending.
@@ -21,6 +23,7 @@ todo_task = { "todo:" ~ quoted ~ attribute_list }
 done_task = { "done:" ~ quoted ~ attribute_list }
 
 /// Optional list of attributes associated with a task.
+/// Each attribute is separated by a comma.
 attribute_list = { ("," ~ attribute)* }
 
 /// Possible attributes for a task: priority, due date, assignee, dependencies, tags.
@@ -31,13 +34,18 @@ priority = { "@high" | "@medium" | "@low" }
 
 /// Task due date in YYYY-MM-DD format.
 due_date = { "due:" ~ date }
+/// Task assignee, indicated by a username prefixed with '@'.
 assignee = { "assign:" ~ "@" ~ identifier }
+/// Dependency marker showing that a task depends on another task.
 depends_on = { "depends_on:" ~ quoted }
+/// Tag attribute used to categorize a task.
 tag = { "@tag:" ~ quoted }
 
 // Quoted string: "Something"
 quoted = @{ "\"" ~ (!"\"" ~ ANY)* ~ "\"" }
+/// Represents a valid identifier: alphanumeric characters, underscores, or hyphens.
 identifier = @{ (ASCII_ALPHANUMERIC | "_" | "-")+ }
+/// Date literal in ISO format: YYYY-MM-DD.
 date = @{ ASCII_DIGIT{4} ~ "-" ~ ASCII_DIGIT{2} ~ "-" ~ ASCII_DIGIT{2} }
 
 // Whitespace (space or tab)
@@ -45,4 +53,5 @@ WHITESPACE = _{ " " | "\t" | "\r\n" | "\n" }
 
 // Line breaks
 NEWLINE = _{ "\r"? ~ "\n" }
+/// Line comment rule, starting with `//` and ending with a newline.
 COMMENT = _{ "//" ~ (!NEWLINE ~ ANY)* ~ NEWLINE? }
