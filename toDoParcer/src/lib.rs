@@ -1,4 +1,4 @@
-
+#![doc = include_str!("../docs.md")]
 /// Library module for To-Do list parsing.
 /// 
 /// Contains the main parser and related data structures.

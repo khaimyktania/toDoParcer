@@ -60,7 +60,6 @@ fn main() {
 /// # Returns
 /// * `Ok(())` if parsed successfully.
 /// * `Err(ParseError)` if parsing fails.
-
 fn run_parse(args: ParseArgs) -> Result<(), ParseError> {
     let content = fs::read_to_string(&args.file)?;
 

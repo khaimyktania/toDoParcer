@@ -259,7 +259,6 @@ fn parse_task(pair: Pair<Rule>) -> Task {
 /// # Arguments
 /// * `pair` — Pest pair for the task block.
 /// * `title`, `priority`, `due_date`, `assignee`, `depends_on`, `tags` — Mutable references to fill parsed data.
-
 fn parse_task_details(
     pair: Pair<Rule>,
     title: &mut String,
