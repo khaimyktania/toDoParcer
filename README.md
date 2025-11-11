@@ -3,6 +3,9 @@
 ## Main idea
 Rust parser for a custom task management with projects, dependencies, priorities, assignees, and tags. Used to describe the flow of tasks in text format.
 
+docs: 
+crate: https://crates.io/crates/to_do_parcer
+
 It includes:
 - projects with tasks and their statuses (todo, done);
 - set priority, deadline, executor;
